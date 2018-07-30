@@ -7,17 +7,30 @@ const axios = require('axios');
 
 const base = "http://legis.senado.gov.br/dadosabertos/senador";
 
-const getSenadores = (id) => {
-    let url = `${base}/deputados`;
+const getOneSenador = (id) => {
+    let url = `${base}`;
     if (id != null) {
         url = `${url}/${id}`;
     } else {
-        url = `${url}/lista/atual`;
+        return [];
     }
+
     return axios
         .get(url)
         .then(data => {
-           return data.data;
+            // Dados do senador selecionado
+            return data.data.DetalheParlamentar.Parlamentar;
+        });    
+}
+
+const getSenadores = () => {
+    let url = `${base}/lista/atual`;
+    
+    return axios
+        .get(url)
+        .then(data => {
+            // Lista de Senadores Parlamentares em exercício
+            return data.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
         });
 };
 
@@ -35,5 +48,6 @@ const getPartidos = () => {
 module.exports = {
     base,
     getSenadores,
+    getOneSenador,
     getPartidos
 };

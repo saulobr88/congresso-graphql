@@ -1,4 +1,4 @@
-const { getPartidos } = require('../services/senadores');
+const { getPartidos, getSenadores, getOneSenador } = require('../services/senadores');
 const readline = require('readline');
 const rl = readline.createInterface({
     input: process.stdin,
@@ -14,6 +14,7 @@ const PartidoSenado = require('../models/partido_senado');
 let LocalPartidos = [];
 let partidos = [];
 let LocalSenadores = [];
+let senadores = [];
 let LocalAutorias = [];
 
 const msg1 = "Vai fazer outra chamada";
@@ -32,6 +33,53 @@ async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
         await callback(array[index], index, array)
     }
+}
+
+function senadoresLoop() {
+    getSenadores().then( data => {
+        LocalSenadores = data;
+        
+        if( LocalSenadores.length > 0 ) {
+            // https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404
+            const internLoop = async () => {
+                await asyncForEach(LocalSenadores, async (value) => {
+                    let id = value.IdentificacaoParlamentar.CodigoParlamentar;
+                    await getOneSenador(id).then( data => {
+                        console.log(msg1, id);
+                        let s = {
+                            id: data.IdentificacaoParlamentar.CodigoParlamentar, // CodigoParlamentar
+                            nome: data.IdentificacaoParlamentar.NomeParlamentar, // NomeParlamentar
+                            nomeCivil: data.IdentificacaoParlamentar.NomeCompletoParlamentar, // NomeCompletoParlamentar
+                            sexo: data.IdentificacaoParlamentar.SexoParlamentar, // SexoParlamentar
+                            formaTratamento: data.IdentificacaoParlamentar.FormaTratamento,
+                            urlFoto: data.IdentificacaoParlamentar.UrlFotoParlamentar,
+                            email: data.IdentificacaoParlamentar.EmailParlamentar,
+                            siglaPartido: data.IdentificacaoParlamentar.SiglaPartidoParlamentar, // SiglaPartidoParlamentar
+                            siglaUf: data.IdentificacaoParlamentar.UfParlamentar, // UfParlamentar
+                            dataNascimento: data.DadosBasicosParlamentar.DataNascimento,
+                            ufNascimento: data.DadosBasicosParlamentar.UfNaturalidade, //UfNaturalidade
+                            endereco: data.DadosBasicosParlamentar.EnderecoParlamentar, // EnderecoParlamentar
+                            telefone: data.DadosBasicosParlamentar.TelefoneParlamentar, // TelefoneParlamentar
+                            fax: data.DadosBasicosParlamentar.FaxParlamentar // FaxParlamentar
+                        };
+                        senadores.push( s );
+                    });
+                });
+                console.log(msg2);
+                console.log(msg3);
+                Senador.insertMany(senadores)
+                    .then( (res) => {
+                        console.log(msg4);
+                        mainPoint();
+                    });
+            };
+            internLoop();
+        } else {
+            console.log('Lista de senadores está vázia');
+            mainPoint();
+        }
+        
+    }); // Fim do getSenadores
 }
 
 function partidosLoop() {

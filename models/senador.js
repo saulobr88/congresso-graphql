@@ -19,6 +19,6 @@ const SenadorSchema = new Schema({
     fax: String // FaxParlamentar
 });
 
-const Senador = mongoose.model('senador', SenadorSchema);
+const Senador = mongoose.model('senadores', SenadorSchema);
 
 module.exports = Senador;
