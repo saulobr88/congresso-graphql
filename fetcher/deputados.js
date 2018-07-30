@@ -11,13 +11,12 @@ const Deputado = require('../models/deputado');
 const DeputadoDespesa = require('../models/deputado_despesa');
 const PartidoCamara = require('../models/partido_camara');
 
+let LocalPartidos = [];
 let LocalDeputados = [];
 let deputados = [];
-let LocalPartidos = [];
-let partidos = [];
+let LocalDespesas = [];
 
 let endpoint = null;
-let continuar = true;
 
 const msg1 = "Vai fazer outra chamada";
 const msg2 = "Nao vai fazer outra chamada";
@@ -35,6 +34,83 @@ async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
         await callback(array[index], index, array)
     }
+}
+
+function despesasLoop() {
+    Deputado.find({}).then( (data) => {
+        deputados = data;
+        console.log(`selecionados ${deputados.length} deputados`);
+        
+        // Loop interno
+        const internLoop = async () => {
+            console.log(`Executando internLoop` );
+            await asyncForEach(deputados, async (value) => {
+                console.log(msg1, value.id);
+                
+                let continuar = true;
+                while( continuar ) {
+                    await getDespesas( endpoint, value.id).then( data => {
+                        console.log(`executou o getDespesas para ${value.id}`);
+                        
+                        let next = null;
+                        let previous = null;
+                        data.links.find( ( element, index, array) => {
+                            if(element.rel == 'next'){
+                                next = element.href;
+                            } else if ( element.rel == 'previous' ) {
+                                previous = element.href;
+                            }
+                            else return false;
+                        });
+                        
+                        if( data.dados.length > 0 ) {
+                            console.log(`Gerando a lista de despesas para ${value.nome}`);
+                            data.dados.forEach( (despesa) => {
+                                let d = {
+                                    id_deputado: value.id,
+                                    ano: despesa.ano,
+                                    mes: despesa.mes,
+                                    tipoDespesa: despesa.tipoDespesa,
+                                    idDocumento: despesa.idDocumento,
+                                    tipoDocumento: despesa.tipoDocumento,
+                                    idTipoDocumento: despesa.idTipoDocumento,
+                                    dataDocumento: despesa.dataDocumento,
+                                    numDocumento: despesa.numDocumento,
+                                    valorDocumento: despesa.valorDocumento,
+                                    urlDocumento: despesa.urlDocumento,
+                                    nomeFornecedor: despesa.nomeFornecedor,
+                                    cnpjCpfFornecedor: despesa.cnpjCpfFornecedor,
+                                    valorLiquido: despesa.valorLiquido,
+                                    valorGlosa: despesa.valorGlosa,
+                                    numRessarcimento: despesa.numRessarcimento,
+                                    idLote: despesa.idLote,
+                                    parcela: despesa.parcela
+                                };
+                                LocalDespesas.push( d );
+                            });
+                            console.log(`Tamanho atual das despesas locais: ${LocalDespesas.length}`);
+                        }
+                        if( next ) {
+                            console.log(msg1);
+                            endpoint = next;
+                        } else {
+                            continuar = false;
+                        }
+                    }); // fim do getDespesas
+                } // fim do while continuar
+            }); // fim do asyncForEach deputados
+
+            console.log(msg2);
+            console.log(msg3);
+            DeputadoDespesa.insertMany(LocalDespesas)
+                .then( (res) => {
+                    console.log(msg4);
+                    endpoint = null;
+                    mainPoint();
+                });
+        };
+        internLoop();
+    });// Deputado.find
 }
 
 function deputadosLoop() {
@@ -153,10 +229,9 @@ function exibeMenu(){
 function mainPoint() {
     exibeMenu();
     rl.question('Entre com um dos números: ', (answer) => {
-        
+        endpoint = null; // Sempre reseta o endpoint
         switch(answer) {
             case '0':
-                continuar = false;
                 sairF();
             break;
             case '1':
@@ -168,7 +243,7 @@ function mainPoint() {
             case '3':
                 despesasLoop();
             break;
-            default: 
+            default:
                 console.log('Opção não encontrada');
                 mainPoint();
         }

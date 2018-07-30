@@ -2,7 +2,7 @@
   "name": "src",
   "version": "1.0.0",
   "description": "GraphQL Experiment",
-  "main": "index.js",
+  "main": "appServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

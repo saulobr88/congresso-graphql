@@ -1,1 +1,1 @@
-console.log('ponto de entrada do sistema : index.js');
+console.log('ponto de entrada do sistema : appServer.js');

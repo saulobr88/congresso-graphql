@@ -43,13 +43,15 @@ const getDeputados = (endpoint = null, itens = 100) => {
 };
 
 const getDespesas = (endpoint = null, id = null, ano = 2018, itens = 100) => {
-    let url = `${base}`;
-    if( id != null ) {
-        url = `${url}/${id}/despesas?ano=${ano}&itens=${itens}`;
-    }
-    if (enpoint != null) {
+    let url = `${base}/deputados`;
+    if (endpoint != null) {
         url = endpoint;
+    } else if( id != null ) {
+        url = `${url}/${id}/despesas?ano=${ano}&itens=${itens}`;
+    } else {
+        return [];
     }
+    
     return axios
         .get(url)
         .then(data => {

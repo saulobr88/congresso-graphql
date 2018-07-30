@@ -11,6 +11,7 @@ const DeputadoDespesaSchema = new Schema({
     tipoDocumento: String,
     idTipoDocumento: String,
     dataDocumento: String,
+    numDocumento: String,
     valorDocumento: String,
     urlDocumento: String,
     nomeFornecedor: String,
