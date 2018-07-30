@@ -11,6 +11,7 @@ const Deputado = require('../models/deputado');
 const DeputadoDespesa = require('../models/deputado_despesa');
 const PartidoCamara = require('../models/partido_camara');
 
+// Local vars
 let LocalPartidos = [];
 let LocalDeputados = [];
 let deputados = [];

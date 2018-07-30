@@ -21,7 +21,19 @@ const getSenadores = (id) => {
         });
 };
 
+const getPartidos = () => {
+    let url = `${base}/partidos`;
+    
+    return axios
+        .get(url)
+        .then(data => {
+            // Array de Partidos
+           return data.data.ListaPartidos.Partidos.Partido;
+        });
+}
+
 module.exports = {
     base,
-    getSenadores
+    getSenadores,
+    getPartidos
 };

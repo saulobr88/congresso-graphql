@@ -9,6 +9,6 @@ const PartidoSenadoSchema = new Schema({
     dataCriacao: String
 });
 
-const PartidoSenado = mongoose.model('partido_camara', PartidoSenadoSchema);
+const PartidoSenado = mongoose.model('partido_senado', PartidoSenadoSchema);
 
 module.exports = PartidoSenado;
