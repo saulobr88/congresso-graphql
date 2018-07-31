@@ -45,9 +45,26 @@ const getPartidos = () => {
         });
 }
 
+const getAutorias = (id) => {
+    // http://legis.senado.gov.br/dadosabertos/senador/4981/autorias
+    let url = `${base}/${id}/autorias`;
+    return axios
+        .get(url)
+        .then(data => {
+            // Array de Partidos
+            return data.data.MateriasAutoriaParlamentar.Parlamentar.Autorias.Autoria;
+        })
+        .catch( (error) => {
+            // handle error
+            // console.log(error);
+            return [];
+        });
+}
+
 module.exports = {
     base,
     getSenadores,
     getOneSenador,
-    getPartidos
+    getPartidos,
+    getAutorias
 };

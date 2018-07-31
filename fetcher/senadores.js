@@ -1,4 +1,4 @@
-const { getPartidos, getSenadores, getOneSenador } = require('../services/senadores');
+const { getPartidos, getSenadores, getOneSenador, getAutorias } = require('../services/senadores');
 const readline = require('readline');
 const rl = readline.createInterface({
     input: process.stdin,
@@ -80,7 +80,7 @@ function senadoresLoop() {
         }
         
     }); // Fim do getSenadores
-}
+} // Fim do senadoresLoop
 
 function partidosLoop() {
     getPartidos().then(data => {
@@ -114,6 +114,53 @@ function partidosLoop() {
 
     }); // Fim getPartidos
 } // Fim partidosLoop
+
+function autoriasLoop() {
+    Senador.find({}).then( (data) => { 
+        senadores = data;
+        console.log(`selecionados ${senadores.length} senadores`);
+        // Loop interno
+        const internLoop = async () => {
+            console.log(`Executando internLoop`);
+            await asyncForEach(senadores, async (value) => {
+                console.log(msg1, value.id);
+                await getAutorias(value.id).then( data => {
+                    console.log(`executou o getAutorias para ${value.id}`);
+                    if( data.length > 0 ) {
+                        console.log(`Gerando a lista de autorias para ${value.nome}`);
+                        data.forEach( (autoria) => {
+                            let a = {
+                                id: autoria.Materia.IdentificacaoMateria.CodigoMateria, // CodigoMateria
+                                siglaCasa: autoria.Materia.IdentificacaoMateria.SiglaCasaIdentificacaoMateria, // SiglaCasaIdentificacaoMateria
+                                nomeCasa: autoria.Materia.IdentificacaoMateria.NomeCasaIdentificacaoMateria, // NomeCasaIdentificacaoMateria
+                                siglaSubtipo: autoria.Materia.IdentificacaoMateria.SiglaSubtipoMateria, // SiglaSubtipoMateria
+                                descricaoSubtipo: autoria.Materia.IdentificacaoMateria.DescricaoSubtipoMateria, // DescricaoSubtipoMateria
+                                numero: autoria.Materia.IdentificacaoMateria.NumeroMateria, // NumeroMateria
+                                ano: autoria.Materia.IdentificacaoMateria.NumeroMateriaAnoMateria, // AnoMateria
+                                indicadorTramitando: autoria.Materia.IdentificacaoMateria.IndicadorTramitando,
+                                ementa: autoria.Materia.EmentaMateria, // EmentaMateria
+                                indicadorAutorPrincipal: autoria.IndicadorAutorPrincipal,
+                                indicadorOutrosAutores: autoria.IndicadorOutrosAutores,
+                                senador_id: value.id
+                            };
+                            LocalAutorias.push( a );
+                        });
+                        console.log(`Tamanho atual das autorias locais: ${LocalAutorias.length}`);
+                    }
+                }); // Fim getAutorias
+            }); // Fim asyncForEach senadores
+
+            console.log(msg2);
+            console.log(msg3);
+            Autoria.insertMany(LocalAutorias)
+                .then( (res) => {
+                    console.log(msg4);
+                    mainPoint();
+                });
+        }; // Fim internLoop
+        internLoop();
+    }); // Fim Senador.find
+} // Fim autoriasLoop
 
 function sairF() {
     rl.close();

@@ -44,7 +44,7 @@ function despesasLoop() {
         
         // Loop interno
         const internLoop = async () => {
-            console.log(`Executando internLoop` );
+            console.log(`Executando internLoop`);
             await asyncForEach(deputados, async (value) => {
                 console.log(msg1, value.id);
                 
