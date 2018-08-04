@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 
 // Models
 const Senador = require('../models/senador');
-const Autoria = require('../models/autorias');
+const Autoria = require('../models/autoria');
 const PartidoSenado = require('../models/partido_senado');
 
 // Local vars
