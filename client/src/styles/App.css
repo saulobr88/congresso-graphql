@@ -35,5 +35,16 @@
   margin-top: 5em;
   margin-left: 5em;
   margin-right: 5em;
-  background: #eee;
+}
+
+.row {margin-bottom: 20px; margin: 5px;}
+.row .row {margin-top: 10px; margin-bottom: 0;}
+
+.container {
+  margin-top: 10px;
+}
+
+.content {
+  padding-left: 2em;
+  padding-right: 2em;
 }
