@@ -1,5 +1,7 @@
-import { gql } from 'apollo-boost';
+//import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
+// Query sem parametros
 const getDeputados = gql`
     {
         deputados {
@@ -10,6 +12,89 @@ const getDeputados = gql`
             siglaPartido
             siglaUf
             urlFoto
+        }
+    }
+`;
+
+// Query com parametros
+const getDeputado = gql`
+    query($id: String!) {
+        deputado(id: $id) {
+            id
+            nome
+            nomeCivil
+            sexo
+            siglaPartido
+            siglaUf
+            urlFoto
+            idLegislatura
+            dataUltimoStatus
+            nomeEleitoral
+            condicaoEleitoral
+            cpf
+            urlWebsite
+            redeSocial
+            dataNascimento
+            dataFalecimento
+            ufNascimento
+            municipioNascimento
+            escolaridade
+            partido {
+                id
+                nome
+                sigla
+            }
+            despesas {
+                ano
+                mes
+                tipoDespesa
+                idDocumento
+                tipoDocumento
+                idTipoDocumento
+                dataDocumento
+                numDocumento
+                valorDocumento
+                urlDocumento
+                nomeFornecedor
+                cnpjCpfFornecedor
+                valorLiquido
+                valorGlosa
+                numRessarcimento
+                idLote
+                parcela
+            }
+        }
+    }
+`;
+
+const getPartidoCamara = gql`
+    query($sigla: String!) {
+        partidoCamara(sigla: $sigla){
+            id
+            nome
+            sigla
+            deputados {
+                id
+                nome
+                nomeCivil
+                sexo
+                siglaPartido
+                siglaUf
+                urlFoto
+            }
+        }
+    }
+`;
+
+const getPartidosCamara = gql`
+    {
+        partidosCamara{
+            id
+            nome
+            sigla
+            deputados {
+                id
+            }
         }
     }
 `;
@@ -28,4 +113,7 @@ const getSenadores = gql`
     }
 `;
 
-export { getDeputados, getSenadores };
+export { 
+    getDeputados, getDeputado, 
+    getPartidosCamara, getPartidoCamara, 
+    getSenadores };
