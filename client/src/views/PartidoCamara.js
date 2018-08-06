@@ -13,7 +13,7 @@ class PartidoCamara extends Component {
         <h1>Deputados - {sigla}</h1>
         <Query query={getPartidoCamara} variables={{ sigla }}>
             {({ loading, error, data }) => {
-                if (loading) return( <div>Loading ...</div> ); ;
+                if (loading) return( <div>Loading ...</div> );
                 if (error) return `Error!: ${error}`;
                 return data.partidoCamara.deputados.map( obj => {
                     const politico = obj;

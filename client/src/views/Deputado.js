@@ -15,7 +15,7 @@ class Deputado extends Component {
                     if (loading) return null;
                     if (error) return `Error!: ${error}`;
                     return (
-                        <Detalhes politico={data.deputado}/>
+                        <Detalhes politico={data.deputado} isDeputado/>
                     );
                     }}
                 </Query>

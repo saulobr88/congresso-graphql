@@ -113,7 +113,42 @@ const getSenadores = gql`
     }
 `;
 
+const getSenador = gql`
+    query($id: String!){
+        senador(id: $id) {
+            id
+            nome
+            nomeCivil
+            sexo
+            siglaPartido
+            siglaUf
+            urlFoto
+            formaTratamento
+            email
+            dataNascimento
+            ufNascimento
+            endereco
+            telefone
+            fax
+            partido {
+                codigo
+                nome
+                sigla
+            }
+            autorias {
+                id
+                numero
+                nomeCasa
+                ementa
+                ano
+                indicadorTramitando
+            }
+        }
+    }
+`;
+
 export { 
     getDeputados, getDeputado, 
     getPartidosCamara, getPartidoCamara, 
-    getSenadores };
+    getSenadores, getSenador 
+};
