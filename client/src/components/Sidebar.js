@@ -9,6 +9,8 @@ import PartidosCamara from '../views/PartidosCamara';
 import PartidoCamara from '../views/PartidoCamara';
 import Senadores from '../views/Senadores';
 import Senador from '../views/Senador';
+import PartidosSenado from '../views/PartidosSenado';
+import PartidoSenado from '../views/PartidoSenado';
 
 const Sidebar = () => {
     return (
@@ -41,7 +43,9 @@ const Sidebar = () => {
                         <Route exact path="/partidos-camara" component={PartidosCamara} />
                         <Route exact path="/partidos-camara/:sigla" component={PartidoCamara} />
                         <Route exact path="/senadores" component={Senadores} />
-                        <Route path="/senadores/:id" component={Senador} />
+                        <Route exact path="/senadores/:id" component={Senador} />
+                        <Route exact path="/partidos-senado" component={PartidosSenado} />
+                        <Route exact path="/partidos-senado/:sigla" component={PartidoSenado} />
                     </Col>
                 </Row>
             </Grid>

@@ -147,8 +147,41 @@ const getSenador = gql`
     }
 `;
 
+const getPartidosSenado = gql`
+    {
+        partidosSenado{
+            codigo
+            nome
+            sigla
+            senadores {
+                id
+            }
+        }
+    }
+`;
+
+const getPartidoSenado = gql`
+    query($sigla: String!) {
+        partidoSenado(sigla: $sigla){
+            codigo
+            nome
+            sigla
+            senadores {
+                id
+                nome
+                nomeCivil
+                sexo
+                siglaPartido
+                siglaUf
+                urlFoto
+            }
+        }
+    }
+`;
+
 export { 
     getDeputados, getDeputado, 
     getPartidosCamara, getPartidoCamara, 
-    getSenadores, getSenador 
+    getSenadores, getSenador,
+    getPartidosSenado, getPartidoSenado
 };
